@@ -17,6 +17,11 @@ export const SelectionPage = () => {
       className="min-h-screen bg-gradient-to-br from-gaming-bg via-gaming-surface to-hero-bg relative overflow-hidden"
     >
       <div className="fixed top-6 right-6 flex items-center gap-4 z-50">
+        {user?.role === 'admin' && (
+          <div className="px-4 py-2 rounded-full bg-yellow-500 text-black font-bold text-sm">
+            ADMIN
+          </div>
+        )}
         <button
           onClick={toggleTheme}
           data-testid="theme-toggle-selection"
