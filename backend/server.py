@@ -206,11 +206,64 @@ async def get_items(category: str):
 
 @api_router.post("/items", response_model=GameHero)
 async def create_item(item_data: GameHeroCreate, current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Solo los administradores pueden crear items"
+        )
     item = GameHero(**item_data.model_dump())
     item_dict = item.model_dump()
     item_dict['created_at'] = item_dict['created_at'].isoformat()
     await db.items.insert_one(item_dict)
     return item
+
+@api_router.put("/items/{item_id}", response_model=GameHero)
+async def update_item(
+    item_id: str,
+    item_data: GameHeroUpdate,
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Solo los administradores pueden editar items"
+        )
+    
+    existing_item = await db.items.find_one({"id": item_id}, {"_id": 0})
+    if not existing_item:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Item no encontrado"
+        )
+    
+    update_data = {k: v for k, v in item_data.model_dump().items() if v is not None}
+    if update_data:
+        await db.items.update_one({"id": item_id}, {"$set": update_data})
+    
+    updated_item = await db.items.find_one({"id": item_id}, {"_id": 0})
+    if isinstance(updated_item['created_at'], str):
+        updated_item['created_at'] = datetime.fromisoformat(updated_item['created_at'])
+    
+    return GameHero(**updated_item)
+
+@api_router.delete("/items/{item_id}")
+async def delete_item(item_id: str, current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Solo los administradores pueden eliminar items"
+        )
+    
+    result = await db.items.delete_one({"id": item_id})
+    if result.deleted_count == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Item no encontrado"
+        )
+    
+    await db.comments.delete_many({"item_id": item_id})
+    
+    return {"message": "Item eliminado exitosamente"}
 
 @api_router.get("/comments", response_model=List[Comment])
 async def get_comments(item_id: str, category: str):
