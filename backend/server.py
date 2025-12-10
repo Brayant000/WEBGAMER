@@ -307,6 +307,22 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@app.on_event("startup")
+async def create_admin_user():
+    admin_exists = await db.users.find_one({"email": "admin@supergamer.com"}, {"_id": 0})
+    if not admin_exists:
+        hashed_password = bcrypt.hashpw("admin".encode('utf-8'), bcrypt.gensalt())
+        admin_user = User(
+            email="admin@supergamer.com",
+            name="Administrador",
+            role="admin"
+        )
+        admin_dict = admin_user.model_dump()
+        admin_dict['created_at'] = admin_dict['created_at'].isoformat()
+        admin_dict['password'] = hashed_password.decode('utf-8')
+        await db.users.insert_one(admin_dict)
+        logger.info("Usuario administrador creado: admin@supergamer.com / admin")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
