@@ -169,7 +169,8 @@ export const GamingSection = () => {
               </form>
             </DialogContent>
           </Dialog>
-        </div>
+          </div>
+        )}
 
         {selectedItem ? (
           <motion.div
