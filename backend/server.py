@@ -93,6 +93,13 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    if credentials is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No se proporcionó token de autenticación",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    
     try:
         token = credentials.credentials
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
