@@ -185,7 +185,15 @@ export const GamingSection = () => {
               <ArrowLeft className="w-4 h-4" />
               Volver a la lista
             </button>
-            <ItemCard item={selectedItem} variant="gaming" />
+            <ItemCard 
+              item={selectedItem} 
+              variant="gaming"
+              onUpdate={fetchItems}
+              onDelete={() => {
+                fetchItems();
+                setSelectedItem(null);
+              }}
+            />
             <CommentSection itemId={selectedItem.id} category="games" variant="gaming" />
           </motion.div>
         ) : (
