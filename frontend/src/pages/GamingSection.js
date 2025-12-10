@@ -106,8 +106,9 @@ export const GamingSection = () => {
       </div>
 
       <div className="container mx-auto px-6 py-12">
-        <div className="flex justify-end mb-8">
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        {isAdmin && (
+          <div className="flex justify-end mb-8">
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <button
                 data-testid="add-game-button"
