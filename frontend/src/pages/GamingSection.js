@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { ItemCard } from '../components/ItemCard';
 import { CommentSection } from '../components/CommentSection';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'sonner';
 import {
   Dialog,
