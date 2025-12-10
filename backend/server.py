@@ -68,6 +68,12 @@ class GameHeroCreate(BaseModel):
     official_link: str
     category: str
 
+class GameHeroUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    image_url: Optional[str] = None
+    official_link: Optional[str] = None
+
 class Comment(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
