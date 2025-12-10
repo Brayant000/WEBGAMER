@@ -191,7 +191,12 @@ export const HeroSection = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {items.map((item) => (
               <div key={item.id} onClick={() => setSelectedItem(item)} className="cursor-pointer">
-                <ItemCard item={item} variant="hero" />
+                <ItemCard 
+                  item={item} 
+                  variant="hero"
+                  onUpdate={fetchItems}
+                  onDelete={fetchItems}
+                />
               </div>
             ))}
           </div>
