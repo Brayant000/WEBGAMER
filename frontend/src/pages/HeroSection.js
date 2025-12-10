@@ -168,7 +168,8 @@ export const HeroSection = () => {
               </form>
             </DialogContent>
           </Dialog>
-        </div>
+          </div>
+        )}
 
         {selectedItem ? (
           <motion.div
